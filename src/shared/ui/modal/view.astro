@@ -1,0 +1,16 @@
+---
+import { IconFeaturedIconCheckCircle } from "@/shared/assets/icons";
+
+import styles from "./styles.module.css";
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={[styles.root, className]}>
+  <header class:list={styles.header}>
+    <div class={styles.background}></div>
+    <IconFeaturedIconCheckCircle />
+    <slot name="header" />
+  </header>
+  <slot />
+</section>

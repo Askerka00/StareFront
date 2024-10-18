@@ -1,0 +1,122 @@
+.root {
+  background: var(--color-bg-brand-section, #0040C1);
+}
+
+.header {
+  padding-top: var(--nav-height);
+  background-image: url('./background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% center;
+  position: relative;
+  overflow: hidden;
+}
+
+.background {
+  background-color: rgb(0 0 0 / 40%);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.header-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+.nav-container {
+  display: none;
+}
+
+.mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  height: var(--nav-height);
+  position: fixed;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {}
+
+.nav-menu-button {
+  color: var(--color-base-white, #fff);
+}
+
+.section {
+  display: flex;
+  padding: var(--spacing-7xl, 64px) var(--spacing-none, 0);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-7xl, 64px);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  color: var(--color-text-primary_on-brand, #FFF);
+  font: var(--font-display-md-semibold);
+  margin-bottom: 12px;
+}
+
+.subheading {
+  color: var(--color-text-primary_on-brand, #fff);
+  font: var(--font-display-xs-semibold);
+  margin-bottom: 24px;
+}
+
+.supporting-text {
+  color: var(--color-text-primary_on-brand, #fff);
+  font: var(--font-text-lg-regular);
+  margin-bottom: 16px;
+}
+
+.with-backdrop {
+  background-color: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(10px);
+}
+
+@media (min-width: 640px) {
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    height: var(--nav-height);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+  }
+
+  .mobile {
+    display: none;
+  }
+
+  .content {
+    align-items: center;
+    margin: 0 auto;
+    max-width: 768px;
+    text-align: center;
+  }
+
+  .heading {
+    color: var(--color-text-primary_on-brand, #FFF);
+    font: var(--font-display-xl-semibold)
+  }
+}

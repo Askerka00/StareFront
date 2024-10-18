@@ -1,0 +1,112 @@
+.header {
+  position: relative;
+  margin-bottom: var(--spacing-2xl, 20px);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.badge {
+  display: flex;
+  padding: var(--spacing-xs, 4px) var(--spacing-lg, 12px) var(--spacing-xs, 4px) 10px;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  border-radius: var(--radius-full, 9999px);
+  border: 1.5px solid var(--badge-color, #155EEF);
+  color: var(--badge-color, #155EEF);
+  font: var(--font-text-sm-medium);
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+.badge-primary {
+  --badge-color: var(--color-utility-brand-600, #155EEF);
+}
+.badge-success {
+  --badge-color: var(--color-utility-success-600, #079455);
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 24px);
+  border-radius: var(--radius-full, 9999px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+}
+
+.tooltip::before {
+  left: -14px !important;
+  top: 48px !important;
+}
+
+.icon {
+  color: var(--color-text-primary-900, #101828);
+}
+
+.heading-and-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 8px);
+}
+
+.heading {
+  color: var(--color-text-primary-900, #101828);
+  font: var(--font-display-xs-semibold);
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.supporting-text {
+  overflow: hidden;
+  color: var(--color-text-tertiary-600, #475467);
+  text-overflow: ellipsis;
+  font: var(--font-text-md-regular);
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-big {
+  color: var(--colors-text-text-primary-900, #101828);
+  font: var(--font-display-xs-semibold);
+}
+
+.price-small {
+  color: var(--colors-text-text-tertiary-600, #475467);
+  font: var(--font-text-lg-regular);
+}
+
+.month {
+  color: var(--colors-text-text-tertiary-600, #475467);
+  font: var(--font-text-lg-regular);
+}
+
+.day {
+  color: var(--colors-text-text-tertiary-600, #475467);
+  font: var(--font-text-lg-regular);
+}
+
+.actions {}
+
+.animated-strike {
+  background: linear-gradient(to left, transparent 50%, red 50%);
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+  background-size: 200% 1px;
+  transition: background-position 1s;
+  color: var(--colors-text-text-tertiary-600, #475467);
+}
+
+.button-action {
+  width: 100%;
+}

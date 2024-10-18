@@ -1,0 +1,181 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+import { useTranslations } from "@/shared/i18n";
+import { Button } from "@/shared/ui/button";
+import { api } from "@/shared/api";
+import { defaultEndDateTime, defaultStartDateTime } from "@/entities/model";
+import { formatDateTime } from "@/shared/lib/dates";
+
+import styles from "./styles.module.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+const actionURL = getRelativeLocaleUrl(locale, "search");
+
+const areas = await api.areas.getList();
+
+const searchParams = Astro.url.searchParams;
+
+const startDateTime = searchParams.has("startDateTime")
+  ? searchParams.get("startDateTime")
+  : formatDateTime(defaultStartDateTime);
+
+const endDateTime = searchParams.has("endDateTime")
+  ? searchParams.get("endDateTime")
+  : formatDateTime(defaultEndDateTime);
+---
+
+<wc-search-form class={styles.widthFull}>
+  <form class:list={[styles.root, className]} action={actionURL}>
+    <div class:list={[styles.group, styles.group1]}>
+      <div
+        class:list={[
+          styles.field,
+          styles.radiusTop,
+          styles.radiusBottom,
+          styles.radiusLeft,
+        ]}
+        data-location-from
+        data-class-name={styles.radiusBottom}
+      >
+        <label class={styles.label}>
+          {t("search.locationFrom")}
+          <wc-location-from class={styles.widthFull}>
+            <select class={styles.select} name="locationFrom">
+              {
+                areas.map(({ id, name }) => (
+                  <option value={name}>{name}</option>
+                ))
+              }
+            </select>
+          </wc-location-from>
+        </label>
+      </div>
+      <div
+        class:list={[styles.hidden, styles.widthFull, styles.withSeparator]}
+        data-location-to-group
+        data-class-name={styles.hidden}
+      >
+        <div class={styles.separator}>
+          <div class={styles.gray}></div>
+        </div>
+        <div class:list={[styles.field, styles.radiusBottom]}>
+          <label class={styles.label}>
+            {t("search.locationTo")}
+            <wc-location-to class={styles.widthFull}>
+              <select class={styles.select} name="locationTo">
+                {
+                  areas.map(({ id, name }) => (
+                    <option value={name}>{name}</option>
+                  ))
+                }
+              </select>
+            </wc-location-to>
+          </label>
+        </div>
+      </div>
+      <div class:list={[styles.separator, styles.separatorTablet]}>
+        <div class={styles.gray}></div>
+      </div>
+    </div>
+
+    <wc-switcher class={styles.switcher}>
+      <label class={styles.switch}>
+        <input
+          class={styles.toggle}
+          name="returnDifferent"
+          type="checkbox"
+          role="switch"
+          value="true"
+        />
+        {t("search.checkbox")}
+      </label>
+    </wc-switcher>
+
+    <div class:list={[styles.group, styles.group2]}>
+      <div
+        class:list={[
+          styles.field,
+          styles.radiusTop,
+          styles.radiusBottom,
+          styles.radiusRight,
+        ]}
+      >
+        <label class={styles.label}>
+          {t("search.rentalDates")}
+          <input class={styles.input} type="text" readonly data-rental-dates />
+          <wc-start-date-time class={styles.hidden}>
+            <input
+              name="startDateTime"
+              type="hidden"
+              readonly
+              value={startDateTime}
+            />
+          </wc-start-date-time>
+          <wc-end-date-time class={styles.hidden}>
+            <input
+              name="endDateTime"
+              type="hidden"
+              readonly
+              value={endDateTime}
+            />
+          </wc-end-date-time>
+        </label>
+      </div>
+    </div>
+
+    <!--<div class:list={[styles.group, styles.group2]}>-->
+    <!--  <div class:list={[styles.field, styles.radiusTop]}>-->
+    <!--    <label class={styles.label}>-->
+    <!--      {t("search.startDateTime")}-->
+    <!--      <input-->
+    <!--        class={styles.input}-->
+    <!--        name="startDateTime"-->
+    <!--        type="text"-->
+    <!--        placeholder={startDateTime}-->
+    <!--        value={startDateTime}-->
+    <!--        readonly-->
+    <!--        data-start-date-time-->
+    <!--      />-->
+    <!--    </label>-->
+    <!--  </div>-->
+    <!--  <div class={styles.separator}>-->
+    <!--    <div class={styles.gray}></div>-->
+    <!--  </div>-->
+    <!--  <div class:list={[styles.field, styles.radiusBottom, styles.radiusRight]}>-->
+    <!--    <label class={styles.label}>-->
+    <!--      {t("search.endDateTime")}-->
+    <!--      <input-->
+    <!--        class={styles.input}-->
+    <!--        name="endDateTime"-->
+    <!--        type="text"-->
+    <!--        placeholder={endDateTime}-->
+    <!--        value={endDateTime}-->
+    <!--        readonly-->
+    <!--        data-end-date-time-->
+    <!--      />-->
+    <!--    </label>-->
+    <!--  </div>-->
+    <!--</div>-->
+
+    <Button class={styles.buttonSubmit} size="lg" type="submit">
+      {t("search.button")}
+    </Button>
+  </form>
+</wc-search-form>
+
+<script src="./script.ts"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>

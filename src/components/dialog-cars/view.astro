@@ -1,0 +1,99 @@
+---
+import { Button } from "@/shared/ui/button";
+import { Modal } from "@/shared/ui/modal";
+import { Input } from "@/shared/ui/input";
+import { Dialog, DialogHeader } from "@/shared/ui/dialog";
+import { ENV } from "@/shared/config";
+import type { CarInterface } from "@/shared/api/cars";
+import { useTranslations } from "@/shared/i18n";
+
+import { Car } from "../car";
+
+import styles from "./styles.module.css";
+
+interface Props {
+  items: CarInterface[];
+}
+
+const { items } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+{
+  items.map((item) => (
+    <Dialog class={styles.dialog} name={`car-${item.id}`}>
+      <DialogHeader name={`car-${item.id}`} />
+      <Modal class={styles.modal}>
+        <wc-apply-form>
+          <div class={styles.headerContent} slot="header">
+            <h3 class={styles.heading} data-heading>
+              {t("dialog.title")}
+            </h3>
+            <p class={styles.supportingText} data-supporting-text>
+              {t("dialog.supportingText")}
+            </p>
+          </div>
+          <div data-hide>
+            <Car
+              imgSrc={item.imgSrc}
+              id={item.id}
+              name={item.name}
+              description={item.description}
+              badge={item?.badge}
+              hasInstantBooking={item.hasInstantBooking}
+              hasInsurance={item.hasInsurance}
+              hasFreeCancelation={item.hasFreeCancelation}
+              year={item.year}
+              transmission={item.transmission}
+              engineVolume={item.engineVolume}
+            />
+            <form class={styles.form}>
+              <input type="hidden" name="id" value={item.id} />
+              <input type="hidden" name="name" value={item.name} />
+              <input
+                type="hidden"
+                name="description"
+                value={item.description}
+              />
+              <Input
+                class={styles.formInput}
+                label={t("booking.form.name.label")}
+                name="firstName"
+                placeholder={t("booking.form.name.placeholder")}
+                value=""
+                required
+                title={t("booking.form.name.title")}
+                minlength="3"
+              />
+              <Input
+                class={styles.formInput}
+                type="tel"
+                label={t("booking.form.phone.label")}
+                name="phoneNumber"
+                placeholder={t("booking.form.phone.placeholder")}
+                value=""
+                required
+                pattern={"^\\+\\d{8,}$"}
+                title={t("booking.form.phone.title")}
+              />
+              <Button class={styles.buttonSubmit} type="submit">
+                {t("booking.form.button")}
+              </Button>
+              <div
+                class="cf-turnstile"
+                data-sitekey={ENV.TURNSTILE_SITE_KEY}
+                data-theme="light"
+              />
+            </form>
+          </div>
+        </wc-apply-form>
+      </Modal>
+    </Dialog>
+  ))
+}
+
+<script src="./script.ts"></script>

@@ -1,0 +1,76 @@
+---
+import { BaseLayout } from "@/layouts";
+
+import { Nav } from "@/shared/ui/nav";
+import { Dialog, DialogHeader } from "@/shared/ui/dialog";
+import { api } from "@/shared/api";
+import { containerStyles } from "@/shared/ui/container";
+import { shuffleArray } from "@/shared/lib/shuffle-array";
+import { useTranslations } from "@/shared/i18n";
+
+import { Hero } from "@/components/hero";
+import { CarsCarousel } from "@/components/cars-carousel";
+import { Features } from "@/components/features";
+import { CarsPromotions } from "@/components/cars-promotions";
+import { QA } from "@/components/qa";
+import { Footer } from "@/components/footer";
+
+const cars = await api.cars.getList();
+const promotions = await api.cars.getPromotionsList();
+const features = [
+  {
+    title: "Гарантированная машина",
+    description:
+      "В отличие от других компаний, наши клиенты всегда получают именно ту машину, которую забронировали. Мы не предлагаем автомобиль аналогичного класса или другого цвета — вам предоставляется именно тот транспорт, который вы выбрали при бронировании.",
+  },
+  {
+    title: "Наличие автомобилей в автопарке",
+    description:
+      "Мы обеспечиваем постоянную доступность автомобилей даже в самые пиковые сезоны. В нашем автопарке всегда есть машины, готовые к аренде, что позволяет избежать ситуаций, когда нужный автомобиль отсутствует.",
+  },
+  {
+    title: "Удобные условия страхования",
+    description:
+      "Наши клиенты могут оформить полную страховку без франшизы, что исключает необходимость внесения депозита. Это делает аренду автомобиля еще более удобной и защищенной, устраняя финансовые риски.",
+  },
+  {
+    title: "Без залогов и блокировок",
+    description:
+      "Мы не забираем документы в залог и не блокируем деньги на карте клиента. Более того, если требуется внести депозит, мы возвращаем его сразу же после возврата автомобиля, обеспечивая быстрый и удобный процесс аренды.",
+  },
+  {
+    title: "Современный автопарк",
+    description:
+      "Мы регулярно обновляем автопарк, чтобы в наличии были только самые новые и современные автомобили. Это гарантирует комфорт, безопасность и удовольствие от вождения.",
+  },
+  {
+    title: "Опыт и лояльность",
+    description:
+      "Работая с 2013 года, мы ценим наших постоянных клиентов и предлагаем им специальные скидки и акции. Кроме того, у нас доступна круглосуточная доставка автомобилей по всем районам, что делает процесс аренды еще более удобным.",
+  },
+];
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+<BaseLayout title={t("meta.title")} description={t("meta.description")}>
+  <Hero />
+  <main>
+    <CarsCarousel items={shuffleArray(cars)} />
+    <Features items={features} />
+    <CarsPromotions items={promotions} />
+    <QA />
+  </main>
+  <Footer />
+  <Dialog name="menu">
+    <DialogHeader name="menu" />
+    <div class={containerStyles}>
+      <Nav />
+    </div>
+  </Dialog>
+</BaseLayout>
+
+<script src="@/entities/model.ts"></script>

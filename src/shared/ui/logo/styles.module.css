@@ -1,0 +1,11 @@
+.root {
+  color: var(--color-fg-primary-900, #101828);
+}
+
+.theme_light {
+  color: var(--color-base-white, #fff);
+}
+
+.theme_dark {
+  color: var(--color-fg-primary-900, #101828);
+}

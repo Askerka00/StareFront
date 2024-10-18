@@ -1,0 +1,66 @@
+.root {
+  position: relative; /* making the .tooltip span a container for the tooltip text */
+  font: var(--font-text-xs-semibold);
+}
+
+.root::before {
+  content: attr(data-text); /* here's the magic */
+  position: absolute;
+  white-space: nowrap;
+
+  /* vertically center */
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* move to right */
+  left: 100%;
+  margin-left: 15px; /* and add a small left margin */
+
+  /* basic styles */
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-gray-900);
+  color: var(--color-base-white);
+  text-align: center;
+  opacity: 0;
+  transition: 0.3s opacity;
+  z-index: 1;
+}
+
+.root:hover::before {
+  opacity: 1;
+}
+
+.root.left::before {
+  /* reset defaults */
+  left: initial;
+  margin: initial;
+
+  /* set new values */
+  right: 100%;
+  margin-right: 15px;
+}
+
+.root::after {
+  content: "";
+  position: absolute;
+
+  /* position tooltip correctly */
+  left: 100%;
+  margin-left: -5px;
+
+  /* vertically center */
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* the arrow */
+  border: 10px solid var(--color-gray-900);
+  border-color: transparent var(--color-gray-900) transparent transparent;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.root:hover::before,
+.tooltip:hover::after {
+  opacity: 1;
+}

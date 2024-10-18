@@ -1,0 +1,66 @@
+---
+import { containerStyles } from "@/shared/ui/container";
+// import { LINKS } from "@/shared/config";
+import { Logo } from "@/shared/ui/logo";
+
+import styles from "./styles.module.css";
+import {
+  ADDRESS,
+  PHONE_NUMBER,
+  TELEGRAM_LINK,
+  WHATSAPP_LINK,
+} from "@/shared/config";
+import {
+  IconCountryFlagGB,
+  IconCountryFlagRU,
+  IconTelegram,
+  IconWhatsApp,
+} from "@/shared/assets/icons";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const localizedAddress = ADDRESS[locale];
+---
+
+<footer class={styles.root}>
+  <div class={containerStyles}>
+    <div class={styles.content}>
+      <ul class={styles.links}>
+        <!--<li class={styles.item}>-->
+        <!--  <a class={styles.link} href={LINKS.TERMS}>-->
+        <!--    Политика конфиденциальности-->
+        <!--  </a>-->
+        <!--</li>-->
+        <Logo lang={locale} />
+      </ul>
+      <div class={styles.group}>
+        <p class={styles.copy}>
+          &copy; 2013 — 2024 Ulethai Ltd.Co
+          <br />
+          <a
+            class={styles.link}
+            href="https://maps.app.goo.gl/k31tN7dr92NSRveu6"
+            target="_blank"
+          >
+            {localizedAddress}
+          </a>
+          <br />
+        </p>
+        <div class={styles.aside}>
+          <a href={TELEGRAM_LINK} target="_blank">
+            <IconTelegram class={styles.icon} />
+          </a>
+          <a href={WHATSAPP_LINK} target="_blank">
+            <IconWhatsApp class={styles.icon} />
+          </a>
+          <a class={styles.link} href={`tel:${PHONE_NUMBER}`}>{PHONE_NUMBER}</a>
+          <a class={styles.link} href={`tel:+66960131311`}>+66960131311</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

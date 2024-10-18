@@ -1,0 +1,39 @@
+---
+import { IconMenu02, IconXClose } from "@/shared/assets/icons";
+import { Button } from "@/shared/ui/button";
+
+import styles from "./styles.module.css";
+
+interface Props {
+  class?: string;
+  iconClass?: string;
+  isOpened?: boolean;
+  autofocus?: boolean;
+}
+
+const {
+  class: className,
+  iconClass,
+  isOpened,
+  autofocus = false,
+  ...rest
+} = Astro.props;
+const classList = [styles.root, isOpened && styles.opened, className];
+---
+
+<Button
+  type="button"
+  iconOnly
+  variant="tertiary-gray"
+  class:list={classList}
+  {autofocus}
+  {...rest}
+>
+  {
+    isOpened ? (
+      <IconXClose class:list={[styles.icon, iconClass]} />
+    ) : (
+      <IconMenu02 class:list={[styles.icon, iconClass]} />
+    )
+  }
+</Button>

@@ -1,0 +1,17 @@
+---
+import { NavMenuButton } from "@/shared/ui/nav-menu-button";
+
+import styles from "./styles.module.css";
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+---
+
+<header class={styles.header}>
+  <wc-dialog-close-trigger data-name={name}>
+    <NavMenuButton isOpened autofocus />
+  </wc-dialog-close-trigger>
+</header>

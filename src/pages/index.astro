@@ -1,0 +1,76 @@
+---
+import { BaseLayout } from "@/layouts";
+
+import { Nav } from "@/shared/ui/nav";
+import { Dialog, DialogHeader } from "@/shared/ui/dialog";
+import { api } from "@/shared/api";
+import { containerStyles } from "@/shared/ui/container";
+import { shuffleArray } from "@/shared/lib/shuffle-array";
+import { useTranslations } from "@/shared/i18n";
+
+import { Hero } from "@/components/hero";
+import { CarsCarousel } from "@/components/cars-carousel";
+import { Features } from "@/components/features";
+import { CarsPromotions } from "@/components/cars-promotions";
+import { QA } from "@/components/qa";
+import { Footer } from "@/components/footer";
+
+const cars = await api.cars.getList();
+const promotions = await api.cars.getPromotionsList();
+const features = [
+  {
+    title: "Guaranteed Vehicle",
+    description:
+      "Unlike other companies, our clients always receive the exact vehicle they booked. We don’t offer a similar class or a different color—you're provided with the specific car you chose during the booking process.",
+  },
+  {
+    title: "Vehicle Availability",
+    description:
+      "We ensure the constant availability of vehicles, even during peak seasons. Our fleet is always stocked, so you never have to worry about your desired car being unavailable.",
+  },
+  {
+    title: "Convenient Insurance Options",
+    description:
+      "Our clients have the option to get full insurance with no deductible, which eliminates the need for a deposit. This makes the car rental process even more convenient and risk-free.",
+  },
+  {
+    title: "No Deposits or Holds",
+    description:
+      "We don’t require any documents to be held as collateral, and we don’t block any funds on your credit card. Additionally, if a deposit is needed, we return it immediately after the vehicle is returned, ensuring a fast and hassle-free rental experience.",
+  },
+  {
+    title: "Modern Fleet",
+    description:
+      "We regularly update our fleet to ensure that only the newest and most modern vehicles are available. This guarantees comfort, safety, and an enjoyable driving experience.",
+  },
+  {
+    title: "Experience and Loyalty",
+    description:
+      "Since 2013, we’ve been dedicated to providing our loyal customers with special discounts and promotions. Additionally, we offer 24/7 vehicle delivery to any area, making the rental process even more convenient.",
+  },
+];
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+<BaseLayout title={t("meta.title")} description={t("meta.description")}>
+  <Hero />
+  <main>
+    <CarsCarousel items={shuffleArray(cars)} />
+    <Features items={features} />
+    <CarsPromotions items={promotions} />
+    <QA />
+  </main>
+  <Footer />
+  <Dialog name="menu">
+    <DialogHeader name="menu" />
+    <div class={containerStyles}>
+      <Nav />
+    </div>
+  </Dialog>
+</BaseLayout>
+
+<script src="@/entities/model.ts"></script>

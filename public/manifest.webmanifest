@@ -1,0 +1,14 @@
+{
+  "name": "ulethai",
+  "short_name": "ulethai",
+  "icons": [
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": "https://dev.ulethai.com/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "description": "A brand new tool for car rent",
+  "background_color": "#ffffff",
+  "scope": "https://dev.ulethai.com/"
+}

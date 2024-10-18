@@ -1,0 +1,46 @@
+---
+import { containerStyles } from "@/shared/ui/container";
+import { useTranslations } from "@/shared/i18n";
+import { SECTIONS } from "@/shared/config";
+
+import styles from "./styles.module.css";
+
+
+interface ItemInterface {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  items: ItemInterface[];
+}
+
+const { items } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+<wc-scroll-to-section class={styles.root} data-section={SECTIONS.FEATURES}>
+  <div class:list={[containerStyles, styles.container]}>
+    <header class={styles.header}>
+      <h2 class={styles.heading}>{t('features.title')}</h2>
+      <p class={styles.supportingText}>{t('features.description')}</p>
+    </header>
+    <ul class={styles.list}>
+      {items.map(item => (
+        <li class={styles.item}>
+          <!--<div class={styles.itemIcon}>-->
+          <!--  <IconTypescript />-->
+          <!--</div>-->
+          <h3 class={styles.itemTitle}>{item.title}</h3>
+          <p class={styles.itemText}>
+            {item.description}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</wc-scroll-to-section>

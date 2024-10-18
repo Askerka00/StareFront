@@ -1,0 +1,5 @@
+# Ignore artifacts:
+dist
+.husky
+.prettierignore
+pnpm-lock.yaml

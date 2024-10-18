@@ -1,0 +1,32 @@
+---
+import styles from "./styles.module.css";
+
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"select"> {
+  class?: string;
+  label?: string;
+}
+
+const { class: className, name, label } = Astro.props;
+
+const id = Math.random().toString();
+---
+
+{
+  label ? (
+    <label for={id} class:list={[styles.label, className]}>
+      {label}
+      <div class={styles.root}>
+        <select id={id} class={styles.select} name={name}>
+          <slot />
+        </select>
+      </div>
+    </label>
+  ) : (
+    <div class:list={[styles.root, className]}>
+      <select class={styles.select} name={name}>
+        <slot />
+      </select>
+    </div>
+  )
+}

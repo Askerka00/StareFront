@@ -1,0 +1,64 @@
+---
+import { containerStyles } from "@/shared/ui/container";
+import { useTranslations } from "@/shared/i18n";
+
+import styles from "./styles.module.css";
+
+import { Car, PricesPromotion } from "@/components/car";
+import type { Promotion } from "@/shared/api/cars.ts";
+import { formatDate } from "@/shared/lib/dates.ts";
+import { IconSale04 } from "@/shared/assets/icons";
+
+interface Props {
+  items: Promotion[];
+}
+
+const { items } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+<section class:list={[containerStyles, styles.root]}>
+  <div class={styles.container}>
+    <h2 class={styles.heading}>
+      <IconSale04 />
+      {t("promotions.title")}
+    </h2>
+    <p class={styles.supportingText}>{t("promotions.description")}</p>
+  </div>
+  <wc-gallery class={styles.wrapper}>
+    <div class={styles.list} data-gallery-scroller>
+      {
+        items.map((item) => (
+          <Car
+            class={styles.listItem}
+            imgSrc={item.car.imgSrc}
+            badge={item.car.badge}
+            id={item.car.id}
+            name={item.car.name}
+            description={item.car.description}
+            hasInstantBooking={item.car.hasInstantBooking}
+            hasInsurance={item.car.hasInsurance}
+            hasFreeCancelation={item.car.hasFreeCancelation}
+            year={item.car.year}
+            promotionId={item.id}
+            transmission={item.car.transmission}
+            engineVolume={item.car.engineVolume}
+            data-gallery-item
+          >
+            <PricesPromotion
+              startDateTime={formatDate(item.startDateTime)}
+              endDateTime={formatDate(item.endDateTime)}
+              pricePerDay={item.car.pricePerDay}
+              priceTotalFormatted={item.priceTotalFormatted}
+              days={item.days}
+            />
+          </Car>
+        ))
+      }
+    </div>
+  </wc-gallery>
+</section>

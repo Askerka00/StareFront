@@ -1,0 +1,35 @@
+.root {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  border-radius: var(--radius-xl, 12px);
+  background: var(--color-bg-primary, #FFF);
+  padding: var(--spacing-3xl, 24px) var(--spacing-3xl, 24px) var(--spacing-4xl, 32px);
+
+  /* Shadows/shadow-xl */
+  box-shadow: 0 20px 24px -4px rgb(16 24 40 / 8%), 0 8px 8px -4px rgb(16 24 40 / 3%);
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xl, 16px);
+  align-self: stretch;
+  width: 100%;
+}
+
+.background {
+  width: 336px;
+  height: 336px;
+  background-image: url('./background-pattern-decorative-circles.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -120px;
+  left: -120px;
+  z-index: 0;
+  opacity: 0.6;
+}

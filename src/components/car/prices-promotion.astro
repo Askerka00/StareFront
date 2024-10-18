@@ -1,0 +1,48 @@
+---
+import { useTranslations } from "@/shared/i18n";
+import { pluralize } from "@/shared/lib/pluralize";
+
+import styles from "./styles.module.css";
+import { formatPrice } from "@/shared/lib/format-price.ts";
+
+interface Props {
+  startDateTime: string;
+  endDateTime: string;
+  priceTotalFormatted: string;
+  pricePerDay: number;
+  days: number;
+}
+
+const { startDateTime, endDateTime, pricePerDay, priceTotalFormatted, days } =
+  Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+const daysPluralized = {
+  en: days === 1 ? t("car.oneDay") : t("car.manyDays"),
+  ru: pluralize(days, [t("car.oneDay"), t("car.twoDays"), t("car.manyDays")]),
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const daysString = daysPluralized[locale];
+
+console.log({ pricePerDay, days });
+
+const oldPrice = formatPrice(pricePerDay * days);
+---
+
+<p class={styles.supportingText}>
+  {startDateTime} — {endDateTime}
+</p>
+<div class={styles.prices}>
+  <p class={styles.priceBig}>
+    <span class={styles.animatedStrike}>{oldPrice}</span>
+    {priceTotalFormatted} ฿<span class={styles.day}>
+      / {days} {daysString}</span
+    >
+  </p>
+</div>

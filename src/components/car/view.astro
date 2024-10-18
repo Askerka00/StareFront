@@ -1,0 +1,142 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+import {
+  IconUsers01,
+  IconStar01,
+  IconArrowUpRight,
+  IconFlash,
+  IconShieldDollar,
+  IconHeartHand,
+} from "@/shared/assets/icons";
+import { useTranslations } from "@/shared/i18n";
+
+import styles from "./styles.module.css";
+import { tooltipStyles } from "@/shared/ui/tooltip";
+
+interface Props {
+  class?: string;
+  imgSrc: string;
+  badge?: string;
+  promotionId?: string;
+  id: string;
+  name: string;
+  description: string;
+  hasInstantBooking: boolean;
+  hasInsurance: boolean;
+  hasFreeCancelation: boolean;
+  year: number;
+  transmission: string;
+  engineVolume: string;
+}
+
+const {
+  class: className,
+  imgSrc,
+  badge,
+  promotionId,
+  id,
+  name,
+  description,
+  hasInstantBooking,
+  hasInsurance,
+  hasFreeCancelation,
+  year,
+  transmission,
+  engineVolume,
+  ...rest
+} = Astro.props;
+const BADGES: Record<string, unknown> = {
+  family: "Идеально для семей",
+  best: "Лучший выбор",
+};
+const BADGES_COLORS: Record<string, unknown> = {
+  family: "primary",
+  best: "success",
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+const searchParams = Astro.url.searchParams.toString();
+const params = searchParams ? `?${searchParams}` : "";
+
+const url = getRelativeLocaleUrl(
+  locale,
+  `/cars/${id}${promotionId ? `/promotions/${promotionId}` : ""}${params}`,
+);
+---
+
+<div class={className} {...rest}>
+  <div class={styles.header}>
+    {
+      (
+        <a class={styles.heading} href={url}>
+          <img class={styles.image} src={imgSrc} alt={name} />
+          <IconArrowUpRight />
+        </a>
+      )
+    }
+    <div class={styles.badges}>
+      {
+        hasInstantBooking && (
+          <div
+            class:list={[tooltipStyles, styles.tooltip]}
+            data-text="Instant booking"
+          >
+            <IconFlash class={styles.icon} />
+          </div>
+        )
+      }
+      {
+        hasInsurance && (
+          <div
+            class:list={[tooltipStyles, styles.tooltip]}
+            data-text="Standart insurance"
+          >
+            <IconShieldDollar class={styles.icon} />
+          </div>
+        )
+      }
+      {
+        hasFreeCancelation && (
+          <div
+            class:list={[tooltipStyles, styles.tooltip]}
+            data-text="Free cancelation"
+          >
+            <IconHeartHand class={styles.icon} />
+          </div>
+        )
+      }
+    </div>
+    {
+      badge && (
+        <div
+          class:list={[styles.badge, styles[`badge-${BADGES_COLORS[badge]}`]]}
+        >
+          {badge === "family" && <IconUsers01 />}
+          {badge === "best" && <IconStar01 />}
+          {BADGES[badge]}
+        </div>
+      )
+    }
+  </div>
+  <div class={styles.headingAndText}>
+    {
+      (
+        <a class={styles.heading} href={url}>
+          {name}
+          <IconArrowUpRight />
+        </a>
+      )
+    }
+    <p class={styles.supportingText}>
+      {year}, {t("car.transmission.automatic")}, {engineVolume}{t("car.volume")}
+    </p>
+    <slot />
+  </div>
+</div>
+
+<script src="./script.ts"></script>

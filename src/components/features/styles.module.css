@@ -1,0 +1,109 @@
+.root {
+  display: flex;
+  padding: var(--spacing-7xl, 64px) 0;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6xl, 48px);
+  background: var(--color-bg-primary, #FFF);
+  scroll-margin: calc(var(--nav-height));
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6xl, 48px);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--width-xl, 768px);
+}
+
+.badge {
+  margin-bottom: 12px;
+}
+
+.heading {
+  color: var(--color-text-primary-900, #101828);
+  text-align: center;
+  font: var(--font-display-sm-semibold);
+  margin-bottom: 16px;
+}
+
+.supporting-text {
+  color: var(--color-text-tertiary-600, #475467);
+  text-align: center;
+  font: var(--font-text-lg-regular);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-5xl, 40px);
+  align-self: stretch;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  padding: 42px var(--spacing-3xl, 24px) var(--spacing-4xl, 32px) var(--spacing-3xl, 24px);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs, 4px);
+  align-self: stretch;
+  border-radius: var(--spacing-xl, 16px);
+  background: var(--color-bg-secondary, #F9FAFB);
+  position: relative;
+}
+
+.item-icon {
+  display: flex;
+  padding: var(--spacing-xxs, 2px);
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: var(--spacing-md, 8px);
+  border: 1px solid var(--color-border-secondary, #EAECF0);
+  background: var(--color-base-white, #FFF);
+  box-shadow: var(--shadow-xs);
+  position: absolute;
+  top: -18px;
+}
+
+.item-title {
+  color: var(--color-text-primary-900, #101828);
+  text-align: center;
+  font: var(--font-text-lg-semibold);
+}
+
+.item-text {
+  color: var(--color-text-tertiary-600, #475467);
+  text-align: center;
+  font: var(--font-text-md-regular);
+}
+
+@media (min-width: 640px) {
+  .root {
+    padding: var(--spacing-9xl, 96px) var(--spacing-none, 0);
+  }
+
+  .container {
+    gap: var(--spacing-7xl, 64px);
+  }
+
+  .heading {
+    margin-bottom: 20px;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-7xl, 64px) var(--spacing-4xl, 32px);
+  }
+}

@@ -1,0 +1,40 @@
+---
+import { BaseLayout } from "@/layouts";
+
+import { Nav } from "@/shared/ui/nav";
+import { Dialog, DialogHeader } from "@/shared/ui/dialog";
+import { containerStyles } from "@/shared/ui/container";
+import { api } from "@/shared/api";
+
+import { HeroSmall } from "@/components/hero-small";
+import { CarsGrid } from "@/components/cars-grid";
+import { Footer } from "@/components/footer";
+// import { DialogCars } from "@/components/dialog-cars";
+import { useTranslations } from "@/shared/i18n";
+
+const items = await api.cars.getList();
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+export const prerender = false;
+---
+
+<BaseLayout title={t("meta.title")} description={t("meta.description")}>
+  <HeroSmall />
+  <main>
+    <CarsGrid items={items} />
+  </main>
+  <Footer />
+  <Dialog name="menu">
+    <DialogHeader name="menu" />
+    <div class={containerStyles}>
+      <Nav />
+    </div>
+  </Dialog>
+  <!--<DialogCars items={items} />-->
+</BaseLayout>
+
+<script src="@/entities/search-params.ts"></script>

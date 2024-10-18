@@ -1,0 +1,779 @@
+---
+import { BaseLayout } from "@/layouts";
+
+import { pluralize } from "@/shared/lib/pluralize";
+import { Nav } from "@/shared/ui/nav";
+import { Dialog, DialogHeader } from "@/shared/ui/dialog";
+import { containerStyles } from "@/shared/ui/container";
+import { api } from "@/shared/api";
+import { ENV } from "@/shared/config";
+import { formatDateTime } from "@/shared/lib/dates";
+import {
+  defaultLocationFrom,
+  defaultLocationTo,
+  defaultEndDateTime,
+  defaultStartDateTime,
+} from "@/entities/model";
+
+import { HeroMinimal } from "@/components/hero-minimal";
+import { Footer } from "@/components/footer";
+import { useTranslations } from "@/shared/i18n";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
+import { TELEGRAM_LINK } from "@/shared/config";
+
+import styles from "./_styles.module.css";
+import { SECTIONS, WHATSAPP_LINK } from "@/shared/config";
+import {
+  IconStar,
+  IconSeat,
+  IconTransmission,
+  IconEngine,
+  IconFuel,
+} from "@/shared/assets/icons";
+// import avatarPhoto from "./avatar.png";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/404");
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const car = await api.cars.getOne({ id });
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+export const prerender = false;
+
+const areas = await api.areas.getList();
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const reviews = await api.reviews.getList({ carId: id, locale });
+
+const searchParams = Astro.url.searchParams;
+
+const locationFrom = searchParams.has("locationFrom")
+  ? searchParams.get("locationFrom")
+  : defaultLocationFrom;
+
+const locationTo = searchParams.has("locationTo")
+  ? searchParams.get("locationTo")
+  : defaultLocationTo;
+
+const startDateTime = searchParams.has("startDateTime")
+  ? searchParams.get("startDateTime")
+  : formatDateTime(defaultStartDateTime);
+
+const endDateTime = searchParams.has("endDateTime")
+  ? searchParams.get("endDateTime")
+  : formatDateTime(defaultEndDateTime);
+
+function generateHalfHourlyTimes() {
+  const times = [];
+
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minutes = 0; minutes < 60; minutes += 30) {
+      const formattedTime =
+        hour.toString().padStart(2, "0") +
+        ":" +
+        minutes.toString().padStart(2, "0");
+      times.push(formattedTime);
+    }
+  }
+
+  return times;
+}
+
+const time = generateHalfHourlyTimes();
+
+const price = await api.checkout.getPrice({
+  // @ts-ignore
+  carId: id,
+  // @ts-ignore
+  locationFrom,
+  // @ts-ignore
+  locationTo,
+  // @ts-ignore
+  startDateTime,
+  // @ts-ignore
+  endDateTime,
+  // @ts-ignore
+  withInsurance: false,
+});
+
+const daysPluralized = {
+  en: price.days === 1 ? t("car.oneDay") : t("car.manyDays"),
+  ru: pluralize(price.days, [
+    t("car.oneDay"),
+    t("car.twoDays"),
+    t("car.manyDays"),
+  ]),
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const daysString = daysPluralized[locale];
+---
+
+<BaseLayout title={t("meta.title")} description={t("meta.description")}>
+  <HeroMinimal />
+  <main class:list={[containerStyles, styles.root]}>
+    <div class={styles.leftSide}>
+      <section class={styles.section}>
+        <h1 class={styles.heading}>{car.name}</h1>
+        <img class={styles.image} src={car.imgSrc} alt={car.name} />
+      </section>
+      <section class={styles.section}>
+        <h2 class={styles.subheading}>{t("booking.specifications")}</h2>
+        <div class:list={[styles.group, styles.groupBig]}>
+          <!--<p class={styles.line}>-->
+          <!--  <span class={styles.leftBig}>{t("car.transmission")}</span>-->
+          <!--  <span class={styles.rightBig}>-->
+          <!--    {t("car.transmission.automatic")}-->
+          <!--  </span>-->
+          <!--</p>-->
+          <!--<div class={styles.divider}></div>-->
+          <!--<p class={styles.line}>-->
+          <!--  <span class={styles.leftBig}>{t("car.engine")}</span>-->
+          <!--  <span class={styles.rightBig}>-->
+          <!--    {car.engineVolume}{t("car.volume")}-->
+          <!--  </span>-->
+          <!--</p>-->
+          <div class={styles.divider}></div>
+          <p class={styles.line}>
+            <span class={styles.leftBig}>{t("car.year")}</span>
+            <span class={styles.rightBig}>{car.year}</span>
+          </p>
+          <div class={styles.divider}></div>
+        </div>
+      </section>
+      <section class={styles.section}>
+        <h2 class={styles.subheading}>{t("booking.features")}</h2>
+        <div class={styles.features}>
+          <div class={styles.feature}>
+            <IconTransmission class={styles.icon} />
+            <span class={styles.rightBig}
+              >{t("car.transmission.automatic")}</span
+            >
+          </div>
+          <div class={styles.feature}>
+            <IconEngine class={styles.icon} />
+            <span class={styles.rightBig}>
+              {car.engineVolume}{t("car.volume")}</span
+            >
+          </div>
+          <div class={styles.feature}>
+            <IconSeat class={styles.icon} />
+            <span class={styles.rightBig}>5</span>
+          </div>
+          <div class={styles.feature}>
+            <IconFuel />
+            <span class={styles.rightBig}>5/100</span>
+          </div>
+        </div>
+      </section>
+      <section class={styles.section}>
+        <h2 class={styles.subheading}>{t("booking.reviews")}</h2>
+        <div class={styles.reviews}>
+          {
+            reviews.map((review) => (
+              <div class={styles.review}>
+                <!--<img class={styles.reviewAvatar} src={avatarPhoto.src} />-->
+                <div class={styles.reviewContent}>
+                  <div class={styles.reviewStars}>
+                    <IconStar />
+                    <IconStar />
+                    <IconStar />
+                    <IconStar />
+                    <IconStar />
+                  </div>
+                  <p class={styles.reviewName}>{review.fullName}</p>
+                  <p class={styles.reviewText}>{review.text}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+    <wc-booking-form
+      class:list={[styles.widthFull, styles.aside]}
+      data-id={car.id}
+      data-location-from={locationFrom}
+      data-location-to={locationTo}
+      data-start-date-time={startDateTime}
+      data-end-date-time={endDateTime}
+    >
+      <form class={styles.form}>
+        <h3 class={styles.subheadingSmall}>{t("booking.cost")}</h3>
+        <div class={styles.divider}></div>
+        <div class={styles.group}>
+          <p class={styles.line}>
+            <span class={styles.left}
+              >{t("booking.rent")} {price.days} {daysString}</span
+            >
+            <span class={styles.right}>
+              <wc-price-rent>{price.rentPrice}</wc-price-rent>
+              ฿
+            </span>
+          </p>
+          <wc-rental-dates class={styles.line}>
+            <span class={styles.right}>
+              <span data-formatted-value>
+                {startDateTime} — {endDateTime}
+              </span>
+            </span>
+            <input type="hidden" name="startDateTime" value={startDateTime} />
+            <input type="hidden" name="endDateTime" value={endDateTime} />
+          </wc-rental-dates>
+        </div>
+        <div class={styles.divider}></div>
+        <div class={styles.group}>
+          <p class={styles.line}>
+            <span class={styles.left}>{t("booking.delivery")}</span>
+            <span class={styles.right}>
+              <wc-price-delivery>{price.deliveryPrice}</wc-price-delivery>
+              ฿
+            </span>
+          </p>
+          <p class={styles.line}>
+            <label for="locationFrom">{t("search.locationFrom")}</label>
+            <span class={styles.right}>
+              <wc-price-location-from>
+                {price.locationFromPrice}
+              </wc-price-location-from>
+              ฿
+            </span>
+          </p>
+          <wc-location-from class={styles.selectWrapper}>
+            <select id="locationFrom" class={styles.select} name="locationFrom">
+              {
+                areas.map(({ id, name }) => (
+                  <option value={name}>{name}</option>
+                ))
+              }
+            </select>
+          </wc-location-from>
+          <wc-start-time class={styles.selectWrapper}>
+            <select
+              aria-label="Start time"
+              class={styles.select}
+              name="startTime"
+            >
+              {time.map((value) => <option value={value}>{value}</option>)}
+            </select>
+          </wc-start-time>
+          <p class={styles.line}>
+            <label for="locationTo">{t("search.locationTo")}</label>
+            <span class={styles.right}>
+              <wc-price-location-to>
+                {price.locationToPrice}
+              </wc-price-location-to>
+              ฿
+            </span>
+          </p>
+          <wc-location-to class={styles.selectWrapper}>
+            <select id="locationTo" class={styles.select} name="locationTo">
+              {
+                areas.map(({ id, name }) => (
+                  <option value={name}>{name}</option>
+                ))
+              }
+            </select>
+          </wc-location-to>
+          <wc-end-time class={styles.selectWrapper}>
+            <select aria-label="End time" class={styles.select} name="endTime">
+              {time.map((value) => <option value={value}>{value}</option>)}
+            </select>
+          </wc-end-time>
+        </div>
+        <div class={styles.divider}></div>
+        <div class={styles.group}>
+          <p class={styles.line}>
+            <span class={styles.left}>{t("booking.priceTotal")}</span>
+            <span class={styles.right}>
+              <wc-price-total>
+                {price.total}
+              </wc-price-total>
+              ฿
+            </span>
+          </p>
+          <p class={styles.line}>
+            <span class={styles.left}
+              >{t("booking.priceRefundableDeposit")}</span
+            >
+            <span class={styles.right}>
+              <wc-price-deposit>{price.carDeposit}</wc-price-deposit>฿
+            </span>
+          </p>
+        </div>
+        <div class={styles.divider}></div>
+        <input type="hidden" name="id" value={car.id} />
+        <input type="hidden" name="name" value={car.name} />
+        <Input
+          class={styles.formInput}
+          label={t("booking.form.name.label")}
+          name="firstName"
+          placeholder={t("booking.form.name.placeholder")}
+          value=""
+          required
+          title={t("booking.form.name.title")}
+          minlength="3"
+        />
+        <Input
+          class={styles.formInput}
+          type="tel"
+          label={t("booking.form.phone.label")}
+          name="phoneNumber"
+          placeholder={t("booking.form.phone.placeholder")}
+          value=""
+          required
+          pattern={"^\\+\\d{8,}$"}
+          title={t("booking.form.phone.title")}
+        />
+        <Button class={styles.buttonSubmit} type="submit">
+          {t("booking.form.button")}
+        </Button>
+        <div
+          class="cf-turnstile"
+          data-sitekey={ENV.TURNSTILE_SITE_KEY}
+          data-theme="light"
+        >
+        </div>
+      </form>
+      <wc-scroll-to-section
+        class:list={[styles.result, "hidden"]}
+        data-success-message
+        data-section={SECTIONS.SUCCESS}
+      >
+        <h3 class={styles.subheadingSmall}>
+          {t("booking.submit.success.title")}
+        </h3>
+        <div class={styles.divider}></div>
+        <p class={styles.line}>
+          <span class={styles.right}
+            >{t("booking.submit.success.description")}</span
+          >
+        </p>
+      </wc-scroll-to-section>
+      <wc-scroll-to-section
+        class:list={[styles.result, "hidden"]}
+        data-error-message
+        data-section={SECTIONS.SUCCESS}
+      >
+        <h3 class={styles.subheadingSmall}>
+          {t("booking.submit.error.title")}
+        </h3>
+        <div class={styles.divider}></div>
+        <p class={styles.line}>
+          <span class={styles.right}>
+            {t("booking.submit.error.description")}
+            <a class={styles.link} href={TELEGRAM_LINK}>
+              {t("booking.submit.error.telegram")}
+            </a> или <a class={styles.link} href={WHATSAPP_LINK}>WhatsApp</a>
+          </span>
+        </p>
+      </wc-scroll-to-section>
+    </wc-booking-form>
+  </main>
+  <Footer />
+  <Dialog name="menu">
+    <DialogHeader name="menu" />
+    <div class={containerStyles}>
+      <Nav />
+    </div>
+  </Dialog>
+</BaseLayout>
+
+<script src="@/entities/model.ts"></script>
+<script src="@/entities/search-params.ts"></script>
+<script>
+  import { actions } from "astro:actions";
+  import { set } from "date-fns";
+  import {
+    combine,
+    createEffect,
+    createEvent,
+    createStore,
+    sample,
+  } from "effector";
+
+  import {
+    $endDateTime,
+    $endDateTimeFormatted,
+    $locationFrom,
+    $locationTo,
+    $startDateTime,
+    $startDateTimeFormatted,
+    locationFromChanged,
+    locationToChanged,
+  } from "@/entities/model";
+  import { scrollToEvent } from "@/entities/scroll";
+
+  import { api } from "@/shared/api";
+  import type { Price } from "@/shared/api/checkout";
+  import { SECTIONS } from "@/shared/config";
+  import { formatDateTime, formatTime, parseTime } from "@/shared/lib/dates";
+
+  const $id = createStore<string>("");
+  const $rentalDates = combine(
+    $startDateTimeFormatted,
+    $endDateTimeFormatted,
+    (startDateTimeFormatted, endDateTimeFormatted) => {
+      return `${startDateTimeFormatted} — ${endDateTimeFormatted}`;
+    },
+  );
+
+  const $startTimeFormatted = $startDateTime.map(formatTime);
+  const $endTimeFormatted = $endDateTime.map(formatTime);
+  const $price = createStore<Price | null>(null);
+  const $withInsurance = createStore<boolean>(false);
+
+  const idChanged = createEvent<string>();
+  const startTimeChanged = createEvent<string>();
+  const endTimeChanged = createEvent<string>();
+  const priceChanged = createEvent();
+
+  const handleTimeChanged = (dateTime: Date, time: string) => {
+    const date = parseTime(time);
+
+    return set(dateTime, {
+      hours: date.getHours(),
+      minutes: date.getMinutes(),
+    });
+  };
+
+  $startDateTime.on(startTimeChanged, handleTimeChanged);
+  $endDateTime.on(endTimeChanged, handleTimeChanged);
+
+  $id.on(idChanged, (_, id) => id);
+
+  const getPriceFx = createEffect(api.checkout.getPrice);
+
+  sample({
+    clock: [$locationFrom, $locationTo, $startDateTime, $endDateTime],
+    target: priceChanged,
+  });
+
+  sample({
+    clock: priceChanged,
+    source: {
+      id: $id,
+      locationFrom: $locationFrom,
+      locationTo: $locationTo,
+      startDateTime: $startDateTime,
+      endDateTime: $endDateTime,
+      withInsurance: $withInsurance,
+    },
+    fn: ({
+      id,
+      locationFrom,
+      locationTo,
+      startDateTime,
+      endDateTime,
+      withInsurance,
+    }) => {
+      return {
+        carId: id,
+        locationFrom,
+        locationTo,
+        startDateTime: formatDateTime(startDateTime),
+        endDateTime: formatDateTime(endDateTime),
+        withInsurance,
+      };
+    },
+    target: getPriceFx,
+  });
+
+  sample({
+    clock: getPriceFx.doneData,
+    target: $price,
+  });
+
+  class BookingForm extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const id = this.dataset.id ?? "";
+      idChanged(id);
+
+      const formElement = this.querySelector("form") as HTMLFormElement;
+      const submitButtonElement = formElement.querySelector(
+        "button[type='submit']",
+      )!;
+      const successMessageElement = this.querySelector(
+        "[data-success-message]",
+      ) as HTMLDivElement;
+      const errorMessageElement = this.querySelector(
+        "[data-error-message]",
+      ) as HTMLDivElement;
+
+      formElement.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        submitButtonElement.setAttribute("disabled", "");
+
+        const formData = new FormData(event.target as HTMLFormElement);
+
+        // @ts-ignore
+        const requestData: {
+          locationFrom: string;
+          locationTo: string;
+          startDateTime: string;
+          endDateTime: string;
+          id: string;
+          name: string;
+          firstName: string;
+          phoneNumber: string;
+        } = Object.fromEntries(formData.entries());
+
+        const { error } = await actions.apply(requestData);
+
+        submitButtonElement.removeAttribute("disabled");
+
+        formElement.remove();
+        if (!error) {
+          successMessageElement.classList.add("sticky");
+          successMessageElement.classList.remove("hidden");
+          scrollToEvent.broadcast({ scrollTo: SECTIONS.SUCCESS });
+        } else {
+          errorMessageElement.classList.add("sticky");
+          errorMessageElement.classList.remove("hidden");
+          scrollToEvent.broadcast({ scrollTo: SECTIONS.ERROR });
+          console.log({ error });
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-booking-form", BookingForm);
+
+  class RentalDays extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const formattedValue = this.querySelector(
+        "[data-formatted-value]",
+      ) as HTMLSpanElement;
+      const startDateTimeElement = this.querySelector(
+        'input[name="startDateTime"]',
+      ) as HTMLInputElement;
+      const endDateTimeElement = this.querySelector(
+        'input[name="endDateTime"]',
+      ) as HTMLInputElement;
+
+      $startDateTimeFormatted.watch((value) => {
+        startDateTimeElement.value = value;
+      });
+
+      $endDateTimeFormatted.watch((value) => {
+        endDateTimeElement.value = value;
+      });
+
+      $rentalDates.watch((rentalDates) => {
+        formattedValue.innerText = rentalDates;
+      });
+    }
+  }
+
+  customElements.define("wc-rental-dates", RentalDays);
+
+  class StartTime extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const element = this.querySelector("select");
+
+      if (element) {
+        element.addEventListener("change", (event) => {
+          const { value } = event.target as HTMLSelectElement;
+
+          startTimeChanged(value);
+        });
+
+        $startTimeFormatted.watch((time) => {
+          element.value = time;
+        });
+      }
+    }
+  }
+
+  customElements.define("wc-start-time", StartTime);
+
+  class EndTime extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const element = this.querySelector("select");
+
+      if (element) {
+        element.addEventListener("change", (event) => {
+          const { value } = event.target as HTMLSelectElement;
+
+          endTimeChanged(value);
+        });
+
+        $endTimeFormatted.watch((time) => {
+          element.value = time;
+        });
+      }
+    }
+  }
+
+  customElements.define("wc-end-time", EndTime);
+
+  class LocationFromSelect extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const element = this.querySelector("select");
+
+      if (element) {
+        element.addEventListener("change", (event) => {
+          const { value } = event.target as HTMLSelectElement;
+          locationFromChanged(value);
+        });
+
+        $locationFrom.watch((locationFrom) => {
+          element.value = locationFrom;
+        });
+      }
+    }
+  }
+
+  customElements.define("wc-location-from", LocationFromSelect);
+
+  class LocationToSelect extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const element = this.querySelector("select");
+
+      if (element) {
+        element.addEventListener("change", (event) => {
+          const { value } = event.target as HTMLSelectElement;
+          locationToChanged(value);
+        });
+
+        $locationTo.watch((locationTo) => {
+          element.value = locationTo;
+        });
+      }
+    }
+  }
+
+  customElements.define("wc-location-to", LocationToSelect);
+
+  class PriceRent extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.rentPrice;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-rent", PriceRent);
+
+  class PriceDelivery extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.deliveryPrice;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-delivery", PriceDelivery);
+
+  class PriceLocationFrom extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.locationFromPrice;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-location-from", PriceLocationFrom);
+
+  class PriceLocationTo extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.locationToPrice;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-location-to", PriceLocationTo);
+
+  class PriceTotal extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.total;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-total", PriceTotal);
+
+  class PriceDeposit extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      $price.watch((price) => {
+        if (price) {
+          this.innerText = price.carDeposit;
+        }
+      });
+    }
+  }
+
+  customElements.define("wc-price-deposit", PriceDeposit);
+</script>

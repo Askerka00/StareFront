@@ -1,0 +1,183 @@
+---
+import { containerStyles } from "@/shared/ui/container";
+import { IconTelegram, IconWhatsApp } from "@/shared/assets/icons";
+import { SECTIONS, TELEGRAM_LINK, WHATSAPP_LINK } from "@/shared/config";
+import { getClassList } from "@/shared/ui/button-link";
+import { type Lang, useTranslations } from "@/shared/i18n";
+
+import photos from "./photos.png";
+import styles from "./styles.module.css";
+
+const linkClassList = getClassList({});
+
+interface Item {
+  question: string;
+  answer: string;
+}
+
+const lists: Record<Lang, Item[]> = {
+  ru: [
+    {
+      question: "Какие документы необходимы для аренды автомобиля у вас?",
+      answer:
+        "Чтобы арендовать автомобиль у нас, вам понадобится паспорт, действительные водительские права из вашей страны и международное водительское удостоверение (МВУ). Это обеспечит вам полное соответствие требованиям законодательства Таиланда и даст уверенность в безопасности аренды.",
+    },
+    {
+      question: "Какую страховку вы предоставляете при аренде?",
+      answer:
+        "Мы предлагаем базовое страховое покрытие с возможностью расширения до полного (CDW). Полное покрытие защитит вас от любых непредвиденных расходов в случае аварии. Мы рекомендуем ознакомиться с условиями страховки перед подписанием договора, чтобы быть полностью уверенными в своей защите.",
+    },
+    {
+      question: "Можно ли выезжать на арендованной машине за пределы Пхукета?",
+      answer:
+        "Да, вы можете покидать Пхукет на наших автомобилях, но просим сообщить нам об этом заранее. В некоторых случаях может потребоваться дополнительное согласование.",
+    },
+    {
+      question: "Каков возрастной ценз для аренды автомобиля у вас?",
+      answer:
+        "Мы сдаем автомобили в аренду лицам от 21 года и старше. Если вам меньше 23 лет, могут применяться дополнительные условия. Также требуется, чтобы водитель имел водительские права не менее одного года.",
+    },
+    {
+      question: "Почему стоит выбрать вашу компанию?",
+      answer:
+        "Мы гордимся высоким уровнем обслуживания, прозрачными условиями аренды и гибкими способами оплаты. Мы не требуем оставлять паспорт в залог, что обеспечивает вашу безопасность и комфорт. Ваше спокойствие — наш приоритет.",
+    },
+    {
+      question: "Трудно ли водить машину на Пхукете?",
+      answer:
+        "Вождение на Пхукете может быть непривычным из-за левого движения и интенсивного трафика мопедов. Наши автомобили оборудованы всем необходимым для вашего удобства, и мы предоставляем инструкции по местным правилам дорожного движения, чтобы помочь вам адаптироваться.",
+    },
+    {
+      question: "Какие у вас цены на аренду автомобилей?",
+      answer:
+        "Наши цены варьируются в зависимости от модели автомобиля и срока аренды, начиная от 1200 бат в день. Мы предлагаем гибкую систему скидок и выгодные условия для длительных периодов аренды. Бронирование заранее позволит вам сэкономить.",
+    },
+    {
+      question: "Что делать в случае аварии?",
+      answer:
+        "В случае аварии свяжитесь с нами. Наши специалисты помогут вам на месте и предоставят всю необходимую поддержку. Благодаря нашему полному страховому покрытию вы можете быть уверены, что все будет решено быстро и эффективно.",
+    },
+    {
+      question: "Какие правила возврата топлива у вас действуют?",
+      answer:
+        "Мы придерживаемся политики “полный бак на полный бак”. Это значит, что вы получаете автомобиль с полным баком топлива и должны вернуть его также с полным баком. Это удобно и прозрачно для обеих сторон.",
+    },
+    {
+      question: "Можно ли арендовать автомобиль без кредитной карты?",
+      answer:
+        "Да, у нас возможна оплата наличными или дебетовой картой. Мы понимаем, что не у всех есть кредитная карта, поэтому предлагаем несколько вариантов оплаты для вашего удобства.",
+    },
+  ],
+  en: [
+    {
+      question: "What documents are required to rent a car from you?",
+      answer:
+        "To rent a car from us, you'll need your passport, a valid driver’s license from your country, and an International Driving Permit (IDP). This ensures full compliance with Thai law and gives you peace of mind while renting.",
+    },
+    {
+      question: "What kind of insurance do you provide with the rental?",
+      answer:
+        "We offer basic insurance coverage with an option to upgrade to full coverage (CDW). Full coverage will protect you from any unexpected costs in case of an accident. We recommend reviewing the insurance terms before signing the contract to be fully confident in your protection.",
+    },
+    {
+      question: "Can I drive the rental car outside of Phuket?",
+      answer:
+        "Yes, you can drive outside of Phuket in our cars, but we ask that you inform us in advance. In some cases, additional approval may be required.",
+    },
+    {
+      question: "What is the age requirement to rent a car from you?",
+      answer:
+        "We rent cars to individuals aged 21 and older. If you are under 23, additional conditions may apply. The driver must also have held a driver's license for at least one year.",
+    },
+    {
+      question: "Why should I choose your company?",
+      answer:
+        "We pride ourselves on high-quality service, transparent rental conditions, and flexible payment options. We do not require you to leave your passport as a deposit, ensuring your security and comfort. Your peace of mind is our priority.",
+    },
+    {
+      question: "Is it difficult to drive on Phuket?",
+      answer:
+        "Driving on Phuket may be unfamiliar due to left-hand driving and heavy scooter traffic. Our cars are fully equipped for your comfort, and we provide guidelines on local traffic rules to help you adapt.",
+    },
+    {
+      question: "What are your car rental prices?",
+      answer:
+        "Our prices vary depending on the car model and rental duration, starting from 1200 baht per day. We offer flexible discount systems and advantageous terms for long-term rentals. Booking in advance will help you save money.",
+    },
+    {
+      question: "What should I do in case of an accident?",
+      answer:
+        "In the event of an accident, contact us. Our specialists will assist you on-site and provide all necessary support. With our full insurance coverage, you can be confident that everything will be resolved quickly and efficiently.",
+    },
+    {
+      question: "What is your fuel return policy?",
+      answer:
+        "We follow a 'full-to-full' fuel policy. This means you will receive the car with a full tank and must return it with a full tank as well. This is convenient and transparent for both parties.",
+    },
+    {
+      question: "Can I rent a car without a credit card?",
+      answer:
+        "Yes, we accept cash or debit card payments. We understand that not everyone has a credit card, so we offer several payment options for your convenience.",
+    },
+  ],
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const list = lists[locale] as Item[];
+---
+
+<wc-scroll-to-section class={styles.root} data-section={SECTIONS.QA}>
+  <div class={containerStyles}>
+    <div class={styles.content}>
+      <div class:list={[styles.column, styles.sticky]}>
+        <h3 class={styles.heading}>{t("qa.title")}</h3>
+        <p class={styles.supportingText}>{t("qa.description")}</p>
+      </div>
+      <div class:list={[styles.column, styles.list]}>
+        {
+          list.map(({ question, answer }, index) => (
+            <details open={index === 0} class={styles.details}>
+              <summary class={styles.summary}>{question}</summary>
+              <p class={styles.text}>{answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <div class:list={containerStyles}>
+    <div class={styles.secondaryContent}>
+      <div class={styles.wrapper}>
+        <img src={photos.src} class={styles.photos} alt="avatars" />
+        <h4 class={styles.secondaryTitle}>{t("qa.banner.title")}</h4>
+        <p class={styles.supportingText}>
+          {t("qa.banner.description")}
+        </p>
+      </div>
+      <div class={styles.actions}>
+        <a
+          class:list={[...linkClassList, styles.telegram]}
+          href={TELEGRAM_LINK}
+          target="_blank"
+        >
+          {t("qa.banner.button.telegram")}
+          <IconTelegram />
+        </a>
+        <a
+          class:list={[...linkClassList, styles.whatsapp]}
+          href={WHATSAPP_LINK}
+          target="_blank"
+        >
+          {t("qa.banner.button.whatsapp")}
+          <IconWhatsApp />
+        </a>
+      </div>
+    </div>
+  </div>
+</wc-scroll-to-section>

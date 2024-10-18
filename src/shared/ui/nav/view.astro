@@ -1,0 +1,99 @@
+---
+import { getRelativeLocaleUrl, getAbsoluteLocaleUrl } from "astro:i18n";
+
+import { SECTIONS, TELEGRAM_LINK, WHATSAPP_LINK } from "@/shared/config";
+import {
+  IconCountryFlagGB,
+  IconCountryFlagRU,
+  IconTelegram,
+  IconWhatsApp,
+} from "@/shared/assets/icons";
+import { Logo } from "@/shared/ui/logo";
+import type { Lang } from "@/shared/i18n";
+
+import styles from "./styles.module.css";
+
+interface Props {
+  class?: string;
+  isDark?: boolean;
+}
+
+const { class: className, isDark = false } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+
+interface Item {
+  text: string;
+  scrollTo: string;
+}
+
+const list: Record<Lang, Item[]> = {
+  en: [
+    { text: "Find a car", scrollTo: SECTIONS.SEARCH },
+    { text: "Our advantages", scrollTo: SECTIONS.FEATURES },
+    { text: "Frequently Asked Questions", scrollTo: SECTIONS.QA },
+  ],
+  ru: [
+    { text: "Найти авто", scrollTo: SECTIONS.SEARCH },
+    { text: "Преимущества", scrollTo: SECTIONS.FEATURES },
+    { text: "Часто задаваемые вопросы", scrollTo: SECTIONS.QA },
+  ],
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const items = list[locale] as Item[];
+
+const nextLocale = locale === "en" ? "ru" : "en";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const pageLanguageURL = getRelativeLocaleUrl(nextLocale, Astro.url as string);
+
+const withoutLink =
+  Astro.url.pathname === "/" || Astro.url.pathname === `/${locale}`;
+
+const mainPageURL = getAbsoluteLocaleUrl(locale);
+---
+
+<nav class:list={[styles.root, className]}>
+  <ul class={styles.list}>
+    <li class={styles.item}>
+      {
+        withoutLink ? (
+          <Logo theme="light" lang={locale} />
+        ) : (
+          <a href={mainPageURL}>
+            <Logo theme="light" lang={locale} />
+          </a>
+        )
+      }
+    </li>
+    {
+      items.map(({ text, scrollTo }) => (
+        <li class={styles.item}>
+          <wc-scroll-to-trigger data-scroll-to={scrollTo}>
+            <wc-dialog-close-trigger data-name="menu">
+              <a href="#" class:list={[styles.link, isDark && styles.dark]}>
+                {text}
+              </a>
+            </wc-dialog-close-trigger>
+          </wc-scroll-to-trigger>
+        </li>
+      ))
+    }
+  </ul>
+  <div class={styles.aside}>
+    <a href={TELEGRAM_LINK} target="_blank">
+      <IconTelegram class={styles.icon} />
+    </a>
+    <a href={WHATSAPP_LINK} target="_blank">
+      <IconWhatsApp class={styles.icon} />
+    </a>
+    <a href={pageLanguageURL} class:list={[styles.right, styles.link]}>
+      {locale === "en" ? <IconCountryFlagRU /> : <IconCountryFlagGB />}
+    </a>
+  </div>
+</nav>

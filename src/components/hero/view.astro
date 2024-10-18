@@ -1,0 +1,60 @@
+---
+import { NavMenuButton } from "@/shared/ui/nav-menu-button";
+import { Nav } from "@/shared/ui/nav";
+import { containerStyles } from "@/shared/ui/container";
+import { Logo } from "@/shared/ui/logo";
+import { SECTIONS } from "@/shared/config";
+import { useTranslations } from "@/shared/i18n";
+
+import { SearchForm } from "../search-form";
+
+import styles from "./styles.module.css";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+const { locale } = Astro.locals;
+const t = useTranslations(locale);
+---
+
+<wc-scroll-to-section class={styles.root} data-section={SECTIONS.SEARCH}>
+  <div
+    class:list={styles.navContainer}
+    data-backdrop
+    data-class-name={styles.withBackdrop}
+  >
+    <div class={containerStyles}>
+      <Nav />
+    </div>
+  </div>
+  <header class={styles.header}>
+    <div class={styles.background}></div>
+    <div class={styles.headerWrapper}>
+      <div
+        class:list={[containerStyles, styles.mobile]}
+        data-backdrop
+        data-class-name={styles.withBackdrop}
+      >
+        <Logo theme="light" lang={locale} />
+        <wc-dialog-open-trigger data-name="menu">
+          <NavMenuButton iconClass={styles.navMenuButton} />
+        </wc-dialog-open-trigger>
+      </div>
+      <section class={styles.section}>
+        <div class:list={[containerStyles, styles.container]}>
+          <div class={styles.content}>
+            <h1 class={styles.heading}>{t("hero.title")}</h1>
+            <h3 class={styles.subheading}>
+              {t("hero.subheading")}
+            </h3>
+            <p class={styles.supportingText}>
+              {t("hero.supportingText")}
+            </p>
+          </div>
+          <SearchForm />
+        </div>
+      </section>
+    </div>
+  </header>
+</wc-scroll-to-section>
+
+<!--<script src="./script.ts"></script>-->
