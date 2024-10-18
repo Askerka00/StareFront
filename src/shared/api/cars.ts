@@ -8,15 +8,16 @@ import hondaAccordWhite from "./images/Honda-Accord-2022-white-R.webp";
 import hondaHRVWhite from "./images/Honda-HRV-RS-2023-_white-R.webp";
 import hondaJazzWhite from "./images/Honda-Jazz-2016-white-R.webp";
 import mg5White from "./images/MG-5-2023-white-R.webp";
-import mazda2White from "./images/Mazda-2-2022-white-R.webp";
+import mazda2White from "./images/mazda-2-sedan-grey-2024.png";
 import mazda3White from "./images/Mazda-3-2022-white-R.jpg";
-import toyotaFortunerWhite from "./images/Toyota-Fortuner-2023-white-R_(1).webp";
-import toyotaHiluxWhite from "./images/Toyota-Hilux-Rocco-2018-white-right.webp";
-import toyotaVelozWhite from "./images/Toyota-Veloz-2022-white-R.webp";
-import toyotaYarisAtivWhite from "./images/Toyota-Yaris-Ativ-2021-white.webp";
+import toyotaFortunerWhite from "./images/toyota-fortuner-white-2019.png";
+import toyotaHiluxWhite from "./images/toyota-prerunner-white-2024.png";
+import toyotaVelozGray from "./images/toyota-veloz-grey-2024.png";
+import toyotaViosBrown from "./images/toyota-vios-brown-2019.png";
+import toyotaYarisAtivGray from "./images/toyota-yaris-ativ-grey-2024.png";
 import toyotaYarisCrossWhite from "./images/Toyota-Yaris-Cross-2020-white-R.webp";
 import hondaCityWhite from "./images/honda-city-white.jpg";
-import mazdaCX30 from "./images/mazda-cx30-2020.jpg";
+import mazdaCX30 from "./images/mazda-cx30-red-2023-removebg-preview.png";
 
 export interface CarInterface {
   id: string;
@@ -119,7 +120,7 @@ export const getList = async (): Promise<CarInterface[]> => {
   return [
     {
       id: "019266fe-0883-7bb4-b7d7-90d3a9148306",
-      imgSrc: toyotaYarisAtivWhite.src,
+      imgSrc: toyotaYarisAtivGray.src,
       name: "Toyota Yaris Ativ",
       description: "1.5",
       engineVolume: "1.5",
@@ -136,7 +137,7 @@ export const getList = async (): Promise<CarInterface[]> => {
     },
     {
       id: "019266fe-15ed-7aa5-a6ae-3d29548c2c28",
-      imgSrc: toyotaYarisAtivWhite.src,
+      imgSrc: toyotaYarisAtivGray.src,
       name: "Toyota Yaris Ativ",
       description: "1.5",
       engineVolume: "1.5",
@@ -170,7 +171,7 @@ export const getList = async (): Promise<CarInterface[]> => {
     },
     {
       id: "019266fe-33ab-7229-b577-09da52f3d238",
-      imgSrc: toyotaVelozWhite.src,
+      imgSrc: toyotaVelozGray.src,
       name: "Toyota Veloz",
       description: "1.5",
       engineVolume: "1.5",
@@ -391,7 +392,7 @@ export const getList = async (): Promise<CarInterface[]> => {
     },
     {
       id: "019266fe-e218-7556-862e-1a29c36d10d6",
-      imgSrc: toyotaYarisAtivWhite.src,
+      imgSrc: toyotaViosBrown.src,
       name: "Toyota Vios",
       description: "1.5",
       engineVolume: "1.5",
